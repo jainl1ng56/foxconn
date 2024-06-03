@@ -1,16 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const deviceForm = document.getElementById('add-device-form');
+    const deviceForm = document.getElementById('device-form');
     const deviceList = document.getElementById('device-list');
+    const queryButton = document.getElementById('query-button');
 
     // Get device list from server and display it
     fetch('http://localhost:3000/api/devices')
         .then(response => response.json())
         .then(data => {
-            console.log('Fetched devices:', data); // Debug log
             data.forEach(device => addDeviceToTable(device));
-        })
-        .catch(error => {
-            console.error('Error fetching devices:', error);
         });
 
     // Handle form submission to add new device
@@ -23,11 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = formData.get('device-name');
         const model = formData.get('device-model');
         const count = formData.get('count');
-        const status = formData.get('status');
+        const project = formData.get('project');
+        const location = formData.get('location');
 
-        const device = { owner, date, name, model, count, status };
-
-        console.log('Submitting device:', device); // Debug log
+        const device = { owner, date, name, model, count, project, location };
 
         fetch('http://localhost:3000/api/devices', {
             method: 'POST',
@@ -36,15 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify(device),
         })
-            .then(response => {
-                console.log('Response status:', response.status); // Debug log
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Device added:', data); // Debug log
                 addDeviceToTable(data);
                 deviceForm.reset();
                 alert('Device added successfully!');
@@ -52,6 +41,28 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.error('Error adding device:', error);
                 alert('Failed to add device.');
+            });
+    });
+
+    // Handle form submission to search devices
+    queryButton.addEventListener('click', () => {
+        const formData = new FormData(deviceForm);
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+            if (value) {
+                params.append(key, value);
+            }
+        });
+
+        fetch(`http://localhost:3000/api/search?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                deviceList.innerHTML = ''; // Clear current device list
+                data.forEach(device => addDeviceToTable(device));
+            })
+            .catch(error => {
+                console.error('Error searching devices:', error);
+                alert('Failed to search devices.');
             });
     });
 
@@ -98,9 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
         countCell.textContent = device.count;
         row.appendChild(countCell);
 
-        const statusCell = document.createElement('td');
-        statusCell.textContent = device.status;
-        row.appendChild(statusCell);
+        const projectCell = document.createElement('td');
+        projectCell.textContent = device.project;
+        row.appendChild(projectCell);
+
+        const locationCell = document.createElement('td');
+        locationCell.textContent = device.location;
+        row.appendChild(locationCell);
 
         const deleteCell = document.createElement('td'); // Create new cell for delete button
         const deleteButton = document.createElement('button');

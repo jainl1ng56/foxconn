@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const db = require('./db'); // 確保這個模塊正確配置數據庫連接
+const db = require('./db');
 
 app.use(cors());
 app.use(express.json());
@@ -20,20 +20,18 @@ app.get('/api/devices', (req, res) => {
 
 // Add a new device
 app.post('/api/devices', (req, res) => {
-  const { owner, date, name, model, count, status } = req.body;
-  console.log('Received request to add new device:', { owner, date, name, model, count, status }); // 添加日誌
-  const query = 'INSERT INTO devices (owner, date, name, model, count, status) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [owner, date, name, model, count, status];
+  const { owner, date, name, model, count, project, location } = req.body;
+  const query = 'INSERT INTO devices (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  const values = [owner, date, name, model, count, project, location];
 
   db.query(query, values, (error, results) => {
     if (error) {
-      console.error('Error adding device:', error); // 更詳細的錯誤日誌
+      console.error('Error adding device:', error);
       res.status(500).send('Error adding device');
     } else {
-      const newDeviceId = results.insertId; // 獲取插入的設備ID
-      const newDevice = { id: newDeviceId, owner, date, name, model, count, status };
-      console.log('New device added:', newDevice); // 添加日誌
-      res.json(newDevice); // 返回包含設備ID的設備對象
+      const newDeviceId = results.insertId; // 获取插入的设备ID
+      const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
+      res.json(newDevice); // 返回包含设备ID的设备对象
     }
   });
 });
@@ -47,6 +45,47 @@ app.delete('/api/devices/:id', (req, res) => {
       res.status(500).send('Error deleting device');
     } else {
       res.status(204).send(); // No content response
+    }
+  });
+});
+
+// Search devices
+app.get('/api/search', (req, res) => {
+  const { owner, date, name, model, project, location } = req.query;
+  let query = 'SELECT * FROM devices WHERE 1=1';
+  const values = [];
+
+  if (owner) {
+    query += ' AND owner LIKE ?';
+    values.push(`%${owner}%`);
+  }
+  if (date) {
+    query += ' AND date = ?';
+    values.push(date);
+  }
+  if (name) {
+    query += ' AND name LIKE ?';
+    values.push(`%${name}%`);
+  }
+  if (model) {
+    query += ' AND model = ?';
+    values.push(model);
+  }
+  if (project) {
+    query += ' AND project LIKE ?';
+    values.push(`%${project}%`);
+  }
+  if (location) {
+    query += ' AND location LIKE ?';
+    values.push(`%${location}%`);
+  }
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Error searching devices:', error);
+      res.status(500).send('Error searching devices');
+    } else {
+      res.json(results);
     }
   });
 });

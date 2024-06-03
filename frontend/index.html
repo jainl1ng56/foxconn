@@ -8,48 +8,78 @@
 </head>
 <body>
   <h1>Warehouse Management</h1>
-  <form id="add-device-form">
-    <label for="owner">Owner:</label>
-    <input type="text" id="owner" name="owner" required>
+  <div class="container">
+    <div class="form-container">
+      <form id="device-form">
+        <label for="owner">Owner:</label>
+        <input type="text" id="owner" name="owner">
 
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" required>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
 
-    <label for="device-name">Device Name:</label>
-    <input type="text" id="device-name" name="device-name" required>
-    
-    <label for="device-model">Device Model:</label>
-    <select id="device-model" name="device-model" required>
-      <option value="Switch">Switch</option>
-      <option value="Transfer">Transfer</option>
-      <option value="Cable">Cable</option>
-    </select>
-    
-    <label for="count">Count:</label>
-    <input type="number" id="count" name="count" required>
+        <label for="device-name">Device Name:</label>
+        <select id="device-name" name="device-name">
+          <option value="">Select Device</option>
+          <option value="QM9700(MQM9700-NS2R)">QM9700(MQM9700-NS2R)</option>
+          <option value="Transceiver(MMA4Z00-NS)">Transceiver(MMA4Z00-NS)</option>
+          <option value="Fiber splitter cables(MFP7E20-N005)">Fiber splitter cables(MFP7E20-N005)</option>
+          <option value="BlueField 3(900-9D3B6-00CV-AA0)">BlueField 3(900-9D3B6-00CV-AA0)</option>
+        </select>
 
-    <label for="status">Status:</label>
-    <input type="text" id="status" name="status" required>
-    
-    <button type="submit">Add Device</button>
-  </form>
-  
-  <h2>Device List</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Owner</th>
-        <th>Date</th>
-        <th>Device Name</th>
-        <th>Device Model</th>
-        <th>Count</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="device-list">
-    </tbody>
-  </table>
-  
+        <label for="device-model">Device Model:</label>
+        <select id="device-model" name="device-model">
+          <option value="">Select Model</option>
+          <option value="Switch">Switch</option>
+          <option value="Transfer">Transfer</option>
+          <option value="Cable">Cable</option>
+          <option value="Card">Card</option>
+        </select>
+
+        <label for="count">Count:</label>
+        <input type="number" id="count" name="count">
+
+        <label for="project">Project:</label>
+        <select id="project" name="project">
+          <option value="">Select Project</option>
+          <option value="NVIDIA">NVIDIA</option>
+          <option value="Microsoft">Microsoft</option>
+          <option value="AWS">AWS</option>
+        </select>
+
+        <label for="location">Location:</label>
+        <select id="location" name="location">
+          <option value="">Select Location</option>
+          <option value="GDL">GDL</option>
+          <option value="HuYao">HuYao</option>
+          <option value="Naqing_RA01">Naqing_RA01</option>
+          <option value="Naqing_RA04">Naqing_RA04</option>
+          <option value="Naqing_RA07">Naqing_RA07</option>
+        </select>
+        <button type="submit">Add Device</button>
+        <button type="button" id="query-button">Query</button>
+      </form>
+    </div>
+
+    <div class="list-container">
+      <h2>Device List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Owner</th>
+            <th>Date</th>
+            <th>Device Name</th>
+            <th>Device Model</th>
+            <th>Count</th>
+            <th>Project</th>
+            <th>Location</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="device-list">
+        </tbody>
+      </table>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
