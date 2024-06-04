@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const device = {
             owner: formData.get('owner'),
             date: formData.get('date'),
-            name: formData.get('device-name'),
-            model: formData.get('device-model'),
+            name: formData.get('name'),
+            model: formData.get('model'),
             count: formData.get('count'),
             project: formData.get('project'),
             location: formData.get('location')
