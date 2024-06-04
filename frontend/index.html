@@ -2,23 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!--setup 頁面的 viewport,根據Moniter的寬度來呈現--> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Warehouse Management</title>
-  <!--Include .css-->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header><h1>Warehouse Management</h1></header>
-  
+  <header>
+    <h1>Warehouse Management</h1>
+  </header>
   <div class="container">
     <div class="form-container">
       <form id="device-form">
         <label for="owner">Owner:</label>
-        <input type="text" id="owner" name="owner">
+        <select id ="owner" name ="owner">
+          <option value="">Select Owner</option>
+          <option value="Kevin">Kevin</option>
+          <option value="Henry">Henry</option>
+          <option value="Li">Li</option>
+          <option value="Rayden">Rayden</option>
+          <option value="Oliver">Oliver</option>
+          <option value="Jed">Jed</option>
+        </select>
 
         <label for="date">Date:</label>
-        <input type="datetime-local" id="date" name="date">
+        <input type="date" id="date" name="date">
 
         <label for="device-name">Device Name:</label>
         <select id="device-name" name="device-name">

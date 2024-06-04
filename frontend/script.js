@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${device.owner}</td>
-            <td>${new Date(device.date).toLocaleString()}</td>
+            <td>${new Date(device.date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
             <td>${device.name}</td>
             <td>${device.model}</td>
             <td>${device.count}</td>
