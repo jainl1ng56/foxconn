@@ -1,96 +1,85 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql2');
+
 const app = express();
-const cors = require('cors');
-const db = require('./db');
-
-app.use(cors());
-app.use(express.json());
-
-// Get all devices
-app.get('/api/devices', (req, res) => {
-  db.query('SELECT * FROM devices', (error, results) => {
-    if (error) {
-      console.error('Error fetching devices:', error);
-      res.status(500).send('Error fetching devices');
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-// Add a new device
-app.post('/api/devices', (req, res) => {
-  const { owner, date, name, model, count, project, location } = req.body;
-  const query = 'INSERT INTO devices (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const values = [owner, date, name, model, count, project, location];
-
-  db.query(query, values, (error, results) => {
-    if (error) {
-      console.error('Error adding device:', error);
-      res.status(500).send('Error adding device');
-    } else {
-      const newDeviceId = results.insertId; // 获取插入的设备ID
-      const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
-      res.json(newDevice); // 返回包含设备ID的设备对象
-    }
-  });
-});
-
-// Delete a device
-app.delete('/api/devices/:id', (req, res) => {
-  const deviceId = req.params.id;
-  db.query('DELETE FROM devices WHERE id = ?', [deviceId], (error, results) => {
-    if (error) {
-      console.error('Error deleting device:', error);
-      res.status(500).send('Error deleting device');
-    } else {
-      res.status(204).send(); // No content response
-    }
-  });
-});
-
-// Search devices
-app.get('/api/search', (req, res) => {
-  const { owner, date, name, model, project, location } = req.query;
-  let query = 'SELECT * FROM devices WHERE 1=1';
-  const values = [];
-
-  if (owner) {
-    query += ' AND owner LIKE ?';
-    values.push(`%${owner}%`);
-  }
-  if (date) {
-    query += ' AND date = ?';
-    values.push(date);
-  }
-  if (name) {
-    query += ' AND name LIKE ?';
-    values.push(`%${name}%`);
-  }
-  if (model) {
-    query += ' AND model = ?';
-    values.push(model);
-  }
-  if (project) {
-    query += ' AND project LIKE ?';
-    values.push(`%${project}%`);
-  }
-  if (location) {
-    query += ' AND location LIKE ?';
-    values.push(`%${location}%`);
-  }
-
-  db.query(query, values, (error, results) => {
-    if (error) {
-      console.error('Error searching devices:', error);
-      res.status(500).send('Error searching devices');
-    } else {
-      res.json(results);
-    }
-  });
-});
-
 const port = 3000;
+
+app.use(bodyParser.json());
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'warehouse'
+});
+
+connection.connect(err => {
+    if (err) {
+        console.error('Error connecting to MySQL:', err);
+        return;
+    }
+    console.log('Connected to MySQL');
+});
+
+// 获取所有设备
+app.get('/api/devices', (req, res) => {
+    connection.query('SELECT * FROM devices', (err, results) => {
+        if (err) {
+            console.error('Error fetching devices:', err);
+            res.status(500).send('Error fetching devices');
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// 添加新设备
+app.post('/api/devices', (req, res) => {
+    const { owner, date, name, model, count, project, location } = req.body;
+    const query = 'INSERT INTO devices (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    connection.query(query, [owner, date, name, model, count, project, location], (err, results) => {
+        if (err) {
+            console.error('Error adding device:', err);
+            res.status(500).send('Error adding device');
+            return;
+        }
+        res.json({ id: results.insertId, owner, date, name, model, count, project, location });
+    });
+});
+
+// 删除设备
+app.delete('/api/devices/:id', (req, res) => {
+    const id = req.params.id;
+    connection.query('DELETE FROM devices WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error deleting device:', err);
+            res.status(500).send('Error deleting device');
+            return;
+        }
+        res.sendStatus(204);
+    });
+});
+
+// 查询设备
+app.get('/api/search', (req, res) => {
+    let query = 'SELECT * FROM devices WHERE 1=1';
+    const params = [];
+    for (const [key, value] of Object.entries(req.query)) {
+        query += ` AND ${key} = ?`;
+        params.push(value);
+    }
+
+    connection.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error searching devices:', err);
+            res.status(500).send('Error searching devices');
+            return;
+        }
+        res.json(results);
+    });
+});
+
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+    console.log(`Server running at http://localhost:${port}/`);
 });

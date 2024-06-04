@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!--setup 頁面的 viewport,根據Moniter的寬度來呈現--> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Warehouse Management</title>
+  <!--Include .css-->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Warehouse Management</h1>
+  <header><h1>Warehouse Management</h1></header>
+  
   <div class="container">
     <div class="form-container">
       <form id="device-form">
@@ -15,7 +18,7 @@
         <input type="text" id="owner" name="owner">
 
         <label for="date">Date:</label>
-        <input type="date" id="date" name="date">
+        <input type="datetime-local" id="date" name="date">
 
         <label for="device-name">Device Name:</label>
         <select id="device-name" name="device-name">
@@ -25,7 +28,7 @@
           <option value="Fiber splitter cables(MFP7E20-N005)">Fiber splitter cables(MFP7E20-N005)</option>
           <option value="BlueField 3(900-9D3B6-00CV-AA0)">BlueField 3(900-9D3B6-00CV-AA0)</option>
         </select>
-
+        
         <label for="device-model">Device Model:</label>
         <select id="device-model" name="device-model">
           <option value="">Select Model</option>
@@ -34,7 +37,7 @@
           <option value="Cable">Cable</option>
           <option value="Card">Card</option>
         </select>
-
+        
         <label for="count">Count:</label>
         <input type="number" id="count" name="count">
 
@@ -60,7 +63,7 @@
       </form>
     </div>
 
-    <div class="list-container">
+    <div class="device-list-container">
       <h2>Device List</h2>
       <table>
         <thead>
