@@ -1,0 +1,47 @@
+Create account:
+CREATE USER 'manager'@'localhost' IDENTIFIED BY '111111';
+GRANT ALL PRIVILEGES ON warehouse.* TO 'manager'@'localhost';
+FLUSH PRIVILEGES;
+
+Check user & 權限 
+SELECT user, host FROM mysql.user WHERE user = 'manager';
+
+SHOW GRANTS FOR 'manager'@'localhost';
+
+給予權限
+GRANT ALL PRIVILEGES ON warehouse.* TO 'manager'@'localhost';
+FLUSH PRIVILEGES;
+
+CREATE DATABASE warehouse;
+
+#切換資料庫
+USE warehouse;
+
+
+CREATE TABLE IF NOT EXISTS devices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    model VARCHAR(255) NOT NULL,
+    count INT NOT NULL,
+    project VARCHAR(255) NOT NULL
+    location VARCHAR(255) NOT NULL
+);
+
+搜尋當下 "devices" form 的內容
+SELECT * form devices
+
+mysql> desc devices;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | int          | NO   | PRI | NULL    | auto_increment |
+| owner    | varchar(255) | NO   |     | NULL    |                |
+| date     | date         | NO   |     | NULL    |                |
+| name     | varchar(255) | NO   |     | NULL    |                |
+| model    | varchar(255) | NO   |     | NULL    |                |
+| count    | int          | NO   |     | NULL    |                |
+| project  | varchar(255) | YES  |     | NULL    |                |
+| location | varchar(255) | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+

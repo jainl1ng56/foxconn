@@ -1,0 +1,12 @@
+warehouse-management/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── DeviceForm.js
+│   │   ├── DeviceList.js
+│   ├── pages/
+│   │   ├── Home.js
+│   │   ├── AddDevice.js
+│   ├── App.js
+│   ├── index.js
+├── package.json
