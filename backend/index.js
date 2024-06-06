@@ -37,7 +37,7 @@ app.post('/api/devices', (req, res) => {
       const updateQuery = `
         UPDATE total
         SET currentcount = totalcount - (
-          SELECT SUM(count)
+          SELECT IFNULL(SUM(count), 0)
           FROM devices
           WHERE name = ? AND model = ?
         )
@@ -60,12 +60,51 @@ app.post('/api/devices', (req, res) => {
 // Delete a device
 app.delete('/api/devices/:id', (req, res) => {
   const deviceId = req.params.id;
-  db.query('DELETE FROM devices WHERE id = ?', [deviceId], (error, results) => {
+
+  // 在删除记录之前获取设备信息
+  db.query('SELECT * FROM devices WHERE id = ?', [deviceId], (error, results) => {
     if (error) {
-      console.error('Error deleting device:', error);
-      res.status(500).send('Error deleting device');
+      console.error('Error fetching device:', error);
+      res.status(500).send('Error fetching device');
+    } else if (results.length === 0) {
+      res.status(404).send('Device not found');
     } else {
-      res.status(204).send(); // No content response
+      const device = results[0];
+
+      // 删除设备记录
+      db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
+        if (deleteError) {
+          console.error('Error deleting device:', deleteError);
+          res.status(500).send('Error deleting device');
+        } else {
+          // 检查是否还有其他相同 name 和 model 的设备记录
+          db.query('SELECT SUM(count) AS totalCount FROM devices WHERE name = ? AND model = ?', [device.name, device.model], (sumError, sumResults) => {
+            if (sumError) {
+              console.error('Error calculating sum:', sumError);
+              res.status(500).send('Error calculating sum');
+            } else {
+              const totalCount = sumResults[0].totalCount || 0;
+
+              // 更新 total 表中的 currentcount
+              const updateQuery = `
+                UPDATE total
+                SET currentcount = totalcount - ?
+                WHERE name = ? AND model = ?
+              `;
+              const updateValues = [totalCount, device.name, device.model];
+
+              db.query(updateQuery, updateValues, (updateError, updateResults) => {
+                if (updateError) {
+                  console.error('Error updating currentcount:', updateError);
+                  res.status(500).send('Error updating currentcount');
+                } else {
+                  res.status(204).send(); // No content response
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 });
@@ -115,3 +154,23 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+// db.js
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'manager',
+  password: '111111',
+  database: 'warehouse'
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err.stack);
+    return;
+  }
+  console.log('Connected to the database.');
+});
+
+module.exports = connection;
