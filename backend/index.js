@@ -1,3 +1,4 @@
+// index.js
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -31,7 +32,27 @@ app.post('/api/devices', (req, res) => {
     } else {
       const newDeviceId = results.insertId; // 获取插入的设备ID
       const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
-      res.json(newDevice); // 返回包含设备ID的设备对象
+
+      // 更新 total 表中的 currentcount
+      const updateQuery = `
+        UPDATE total
+        SET currentcount = totalcount - (
+          SELECT SUM(count)
+          FROM devices
+          WHERE name = ? AND model = ?
+        )
+        WHERE name = ? AND model = ?
+      `;
+      const updateValues = [name, model, name, model];
+
+      db.query(updateQuery, updateValues, (updateError, updateResults) => {
+        if (updateError) {
+          console.error('Error updating currentcount:', updateError);
+          res.status(500).send('Error updating currentcount');
+        } else {
+          res.json(newDevice); // 返回包含设备ID的设备对象
+        }
+      });
     }
   });
 });

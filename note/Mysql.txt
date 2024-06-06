@@ -1,23 +1,27 @@
+!!##Install node##!!
+
 Create account:
 CREATE USER 'manager'@'localhost' IDENTIFIED BY '111111';
 GRANT ALL PRIVILEGES ON warehouse.* TO 'manager'@'localhost';
 FLUSH PRIVILEGES;
 
-Check user & 權限 
+#Check user & 權限 
 SELECT user, host FROM mysql.user WHERE user = 'manager';
 
 SHOW GRANTS FOR 'manager'@'localhost';
 
-給予權限
+#給予權限
 GRANT ALL PRIVILEGES ON warehouse.* TO 'manager'@'localhost';
 FLUSH PRIVILEGES;
 
+#創建一個 DATABASE 
 CREATE DATABASE warehouse;
 
 #切換資料庫
 USE warehouse;
 
 
+##出入庫的table
 CREATE TABLE IF NOT EXISTS devices (
     id INT AUTO_INCREMENT PRIMARY KEY,
     owner VARCHAR(255) NOT NULL,
@@ -28,9 +32,12 @@ CREATE TABLE IF NOT EXISTS devices (
     project VARCHAR(255) NOT NULL
     location VARCHAR(255) NOT NULL
 );
-
-搜尋當下 "devices" form 的內容
+#搜尋當下 "devices" form 的內容
 SELECT * form devices
+
+#Modify table中項目的 屬性
+ALTER TABLE <table name> CHANGE COLUMN <欄位> <欄位> <屬性> NOT NULL;
+EX:ALTER TABLE total CHANGE COLUMN currentcount currentcount int ;
 
 mysql> desc devices;
 +----------+--------------+------+-----+---------+----------------+
@@ -45,3 +52,26 @@ mysql> desc devices;
 | project  | varchar(255) | YES  |     | NULL    |                |
 | location | varchar(255) | YES  |     | NULL    |                |
 +----------+--------------+------+-----+---------+----------------+
+
+##Device的總表
+mysql> CREATE TABLE total (
+    -> id integer auto_increment primary key,
+    -> name varchar(255) NOT NULL,
+    -> model varchar(255) NOT NULL,
+    -> totalcount varchar(255) NOT NULL,
+    -> currentcount int NOT NULL
+    -> );
+mysql> desc total
+    -> ;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| id           | int          | NO   | PRI | NULL    | auto_increment |
+| name         | varchar(255) | NO   |     | NULL    |                |
+| model        | varchar(255) | NO   |     | NULL    |                |
+| totalcount   | varchar(255) | NO   |     | NULL    |                |
+| currentcount | int          | NO   |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+
+
+);
