@@ -75,3 +75,22 @@ mysql> desc total
 
 
 );
+
+#ADD total device option
+INSERT INTO total (name,model,totalcount)
+VALUES
+('QM9700(MQM9700-NS2R)','Switch','27'),
+('SN5600(920-9N42F-00RI-7C0)','Switch','2'),
+('SN3700(MSN3700-VS2RC)','Switch','2'),
+('SN2201(MSN2201-CB2RC)','Switch','7'),
+('Gigabit PoE Switch','Switch','4'),
+('光纖線(MFP7E10-N010)','Cable','2331'),
+('AOC(MFS1S00-H005V)','Cable','127'),
+('Fiber splitter cables(MFP7E20-N005)','Cable','57'),
+('DAC(MCP1600-C002E30N)','Cable','94'),
+('BlueField 3(900-9D3B6-00CV-AA0)','Card','2'),
+('CX7(MCX75310AAS-NEAT)','Card','6'),
+('Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)','Transceiver','10'),
+('Transceiver(MMA4Z00-NS)','Transceiver','1000'),
+('Transceiver(MMA4Z00-NS400','Transceiver','673'),
+('Transceiver(MMA1Z00-NS400)','Transceiver','264');

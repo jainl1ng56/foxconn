@@ -1,4 +1,3 @@
-// index.js
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -36,7 +35,7 @@ app.post('/api/devices', (req, res) => {
       // 更新 total 表中的 currentcount
       const updateQuery = `
         UPDATE total
-        SET currentcount = totalcount - (
+        SET currentcount = (
           SELECT IFNULL(SUM(count), 0)
           FROM devices
           WHERE name = ? AND model = ?
@@ -77,30 +76,24 @@ app.delete('/api/devices/:id', (req, res) => {
           console.error('Error deleting device:', deleteError);
           res.status(500).send('Error deleting device');
         } else {
-          // 检查是否还有其他相同 name 和 model 的设备记录
-          db.query('SELECT SUM(count) AS totalCount FROM devices WHERE name = ? AND model = ?', [device.name, device.model], (sumError, sumResults) => {
-            if (sumError) {
-              console.error('Error calculating sum:', sumError);
-              res.status(500).send('Error calculating sum');
+          // 更新 total 表中的 currentcount
+          const updateQuery = `
+            UPDATE total
+            SET currentcount = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND model = ?
+            )
+            WHERE name = ? AND model = ?
+          `;
+          const updateValues = [device.name, device.model, device.name, device.model];
+
+          db.query(updateQuery, updateValues, (updateError, updateResults) => {
+            if (updateError) {
+              console.error('Error updating currentcount:', updateError);
+              res.status(500).send('Error updating currentcount');
             } else {
-              const totalCount = sumResults[0].totalCount || 0;
-
-              // 更新 total 表中的 currentcount
-              const updateQuery = `
-                UPDATE total
-                SET currentcount = totalcount - ?
-                WHERE name = ? AND model = ?
-              `;
-              const updateValues = [totalCount, device.name, device.model];
-
-              db.query(updateQuery, updateValues, (updateError, updateResults) => {
-                if (updateError) {
-                  console.error('Error updating currentcount:', updateError);
-                  res.status(500).send('Error updating currentcount');
-                } else {
-                  res.status(204).send(); // No content response
-                }
-              });
+              res.status(204).send(); // No content response
             }
           });
         }
@@ -116,28 +109,28 @@ app.get('/api/search', (req, res) => {
   const values = [];
 
   if (owner) {
-    query += ' AND owner LIKE ?';
-    values.push(`%${owner}%`);
+    query += ' AND owner = ?';
+    values.push(owner);
   }
   if (date) {
     query += ' AND date = ?';
     values.push(date);
   }
   if (name) {
-    query += ' AND name LIKE ?';
-    values.push(`%${name}%`);
+    query += ' AND name = ?';
+    values.push(name);
   }
   if (model) {
-    query += ' AND model LIKE ?';
-    values.push(`%${model}%`);
+    query += ' AND model = ?';
+    values.push(model);
   }
   if (project) {
-    query += ' AND project LIKE ?';
-    values.push(`%${project}%`);
+    query += ' AND project = ?';
+    values.push(project);
   }
   if (location) {
-    query += ' AND location LIKE ?';
-    values.push(`%${location}%`);
+    query += ' AND location = ?';
+    values.push(location);
   }
 
   db.query(query, values, (error, results) => {
@@ -150,27 +143,20 @@ app.get('/api/search', (req, res) => {
   });
 });
 
+// Get all totals
+app.get('/api/totals', (req, res) => {
+  db.query('SELECT * FROM total', (error, results) => {
+    if (error) {
+      console.error('Error fetching totals:', error);
+      res.status(500).send('Error fetching totals');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-// db.js
-const mysql = require('mysql2');
-
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'manager',
-  password: '111111',
-  database: 'warehouse'
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err.stack);
-    return;
-  }
-  console.log('Connected to the database.');
-});
-
-module.exports = connection;

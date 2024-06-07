@@ -85,4 +85,43 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // Total button event handler
+    document.getElementById('total-button').addEventListener('click', function() {
+        fetch('http://localhost:3000/api/totals')
+            .then(response => response.json())
+            .then(data => {
+                const deviceListContainer = document.querySelector('.device-list-container');
+                const deviceList = document.getElementById('device-list');
+
+                // Clear the existing table body
+                deviceList.innerHTML = '';
+
+                // Create new rows for each item in the total data
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.model}</td>
+                        <td>${item.totalcount}</td>
+                        <td>${item.currentcount}</td>
+                    `;
+
+                    deviceList.appendChild(row);
+                });
+
+                // Update table headers to match the total table
+                const headers = document.querySelector('.device-list-container thead tr');
+                headers.innerHTML = `
+                    <th>Name</th>
+                    <th>Model</th>
+                    <th>Total Count</th>
+                    <th>Current Count</th>
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching totals:', error);
+            });
+    });
 });
