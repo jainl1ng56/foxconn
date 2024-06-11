@@ -56,6 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 deviceList.innerHTML = '';
+                // 更新表格標題
+                const headers = document.querySelector('.device-list-container thead tr');
+                headers.innerHTML = `
+                    <th>Owner</th>
+                    <th>Date</th>
+                    <th>Device Name</th>
+                    <th>Device Model</th>
+                    <th>Count</th>
+                    <th>Project</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                `;
                 data.forEach(device => {
                     addDeviceToTable(device);
                 });

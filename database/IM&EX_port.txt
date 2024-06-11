@@ -1,0 +1,6 @@
+Export:
+cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+#prompt @$f
+@)mysqldump -u root -p warehouse > D:\warehouse.sql
+Enter password: ********
