@@ -1,12 +1,9 @@
 warehouse-management/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── DeviceForm.js
-│   │   ├── DeviceList.js
-│   ├── pages/
-│   │   ├── Home.js
-│   │   ├── AddDevice.js
-│   ├── App.js
+├── backend/
+│   ├── db.js
 │   ├── index.js
+├── frontend/
+│   ├── index.html
+│   ├── styles.css
+│   └── script.js
 ├── package.json

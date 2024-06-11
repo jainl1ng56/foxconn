@@ -4,12 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryButton = document.getElementById('query-button');
     const totalButton = document.getElementById('total-button');
 
-    // 获取设备列表并显示
+    // Get devices table
     function fetchDevices() {
-        fetch('http://localhost:3000/api/devices')
+        fetch('/api/devices')
             .then(response => response.json())
             .then(data => {
-                deviceList.innerHTML = ''; // 清空表格
+                deviceList.innerHTML = ''; // clear table
                 data.forEach(device => {
                     addDeviceToTable(device);
                 });
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // 更新表格标题
+    // Update table title
     function updateDeviceTableHeaders() {
         const headers = document.querySelector('.device-list-container thead tr');
         headers.innerHTML = `
@@ -32,10 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // 初始化时获取设备列表
+    // inital device table
     fetchDevices();
 
-    // 添加设备
+    // add device
     deviceForm.addEventListener('submit', event => {
         event.preventDefault();
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location: formData.get('location')
         };
 
-        fetch('http://localhost:3000/api/devices', {
+        fetch('/api/devices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => response.json())
             .then(newDevice => {
-                fetchDevices(); // 重新获取设备列表并更新表格
+                fetchDevices(); // reload device table & Update table 內容
                 deviceForm.reset();
             });
     });
 
-    // 查询设备
+    // Query device
     queryButton.addEventListener('click', () => {
         const formData = new FormData(deviceForm);
         const query = new URLSearchParams();
@@ -75,12 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        fetch(`http://localhost:3000/api/search?${query.toString()}`)
+        fetch(`/api/search?${query.toString()}`)
             .then(response => response.json())
             .then(data => {
                 deviceList.innerHTML = '';
                 
-                // 更新表格标题
+                // Update list title
                 updateDeviceTableHeaders();
 
                 data.forEach(device => {
@@ -89,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
-    // 查看總數據
+    // check total value
     totalButton.addEventListener('click', () => {
-        fetch('http://localhost:3000/api/totals')
+        fetch('/api/totals')
             .then(response => response.json())
             .then(data => {
-                deviceList.innerHTML = ''; // 清空表格
+                deviceList.innerHTML = ''; // Clear list
 
-                // 创建总数表格行
+                // Create 表格的行總數
                 data.forEach(item => {
                     const row = document.createElement('tr');
 
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     deviceList.appendChild(row);
                 });
 
-                // 更新表格标题为总数数据表格标题
+                // Update list title to "total" format
                 const headers = document.querySelector('.device-list-container thead tr');
                 headers.innerHTML = `
                     <th>Name</th>
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
-    // 在表格中添加设备
+    // add device in "devies" list
     function addDeviceToTable(device) {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deviceList.appendChild(row);
 
         row.querySelector('button').addEventListener('click', () => {
-            fetch(`http://localhost:3000/api/devices/${device.id}`, {
+            fetch(`/api/devices/${device.id}`, {
                 method: 'DELETE'
             }).then(() => {
                 row.remove();

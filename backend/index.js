@@ -1,10 +1,13 @@
 const express = require('express');
-const app = express();
+const path = require('path')
 const cors = require('cors');
 const db = require('./db');
+const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Get all devices
 app.get('/api/devices', (req, res) => {
@@ -29,7 +32,7 @@ app.post('/api/devices', (req, res) => {
       console.error('Error adding device:', error);
       res.status(500).send('Error adding device');
     } else {
-      const newDeviceId = results.insertId; // 获取插入的设备ID
+      const newDeviceId = results.insertId; // GET 插入的deivce ID
       const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
 
       // 更新 total 表中的 currentcount
@@ -49,7 +52,7 @@ app.post('/api/devices', (req, res) => {
           console.error('Error updating currentcount:', updateError);
           res.status(500).send('Error updating currentcount');
         } else {
-          res.json(newDevice); // 返回包含设备ID的设备对象
+          res.json(newDevice); // 返回包含設備ID的設備物件
         }
       });
     }
@@ -60,7 +63,7 @@ app.post('/api/devices', (req, res) => {
 app.delete('/api/devices/:id', (req, res) => {
   const deviceId = req.params.id;
 
-  // 在删除记录之前获取设备信息
+  // 在delete 項目之前,先存取device的info
   db.query('SELECT * FROM devices WHERE id = ?', [deviceId], (error, results) => {
     if (error) {
       console.error('Error fetching device:', error);
@@ -70,7 +73,7 @@ app.delete('/api/devices/:id', (req, res) => {
     } else {
       const device = results[0];
 
-      // 删除设备记录
+      // delete device紀錄
       db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
         if (deleteError) {
           console.error('Error deleting device:', deleteError);
@@ -155,8 +158,15 @@ app.get('/api/totals', (req, res) => {
   });
 });
 
+// 返回前端的 index.html 文件
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 const port = 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const host = '0.0.0.0';  // ??監聽所有網路街口??
+
+app.listen(port, host, () => {
+  console.log(`Server running on http://${host}:${port}`);
 });
+
