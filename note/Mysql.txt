@@ -92,5 +92,5 @@ VALUES
 ('CX7(MCX75310AAS-NEAT)','Card','6'),
 ('Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)','Transceiver','10'),
 ('Transceiver(MMA4Z00-NS)','Transceiver','1000'),
-('Transceiver(MMA4Z00-NS400','Transceiver','673'),
+('Transceiver(MMA4Z00-NS400)','Transceiver','673'),
 ('Transceiver(MMA1Z00-NS400)','Transceiver','264');
