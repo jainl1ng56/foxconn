@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path')
+const path = require('path');
 const cors = require('cors');
 const db = require('./db');
 const app = express();
@@ -32,27 +32,50 @@ app.post('/api/devices', (req, res) => {
       console.error('Error adding device:', error);
       res.status(500).send('Error adding device');
     } else {
-      const newDeviceId = results.insertId; // GET 插入的deivce ID
+      const newDeviceId = results.insertId; // 获取插入的设备ID
       const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
 
-      // 更新 total 表中的 currentcount
+      // 更新 total 表中的 currentcount, HuYao, GDL 和 NaQing
       const updateQuery = `
         UPDATE total
         SET currentcount = (
           SELECT IFNULL(SUM(count), 0)
           FROM devices
           WHERE name = ? AND model = ?
+        ),
+        HuYao = (
+          SELECT IFNULL(SUM(count), 0)
+          FROM devices
+          WHERE name = ? AND location = 'HuYao'
+        ),
+        GDL = (
+          SELECT IFNULL(SUM(count), 0)
+          FROM devices
+          WHERE name = ? AND location = 'GDL'
+        ),
+        NaQing = (
+          SELECT IFNULL(SUM(count), 0)
+          FROM devices
+          WHERE name = ? AND model = ?
+        ) - (
+          SELECT IFNULL(SUM(count), 0)
+          FROM devices
+          WHERE name = ? AND location = 'HuYao'
+        ) - (
+          SELECT IFNULL(SUM(count), 0)
+          FROM devices
+          WHERE name = ? AND location = 'GDL'
         )
         WHERE name = ? AND model = ?
       `;
-      const updateValues = [name, model, name, model];
+      const updateValues = [name, model, name, name, name, name, model, name, name, name, model];
 
       db.query(updateQuery, updateValues, (updateError, updateResults) => {
         if (updateError) {
-          console.error('Error updating currentcount:', updateError);
-          res.status(500).send('Error updating currentcount');
+          console.error('Error updating total:', updateError);
+          res.status(500).send('Error updating total');
         } else {
-          res.json(newDevice); // 返回包含設備ID的設備物件
+          res.json(newDevice); // 返回包含设备ID的设备对象
         }
       });
     }
@@ -63,7 +86,7 @@ app.post('/api/devices', (req, res) => {
 app.delete('/api/devices/:id', (req, res) => {
   const deviceId = req.params.id;
 
-  // 在delete 項目之前,先存取device的info
+  // 在删除设备前，先获取设备信息
   db.query('SELECT * FROM devices WHERE id = ?', [deviceId], (error, results) => {
     if (error) {
       console.error('Error fetching device:', error);
@@ -73,30 +96,54 @@ app.delete('/api/devices/:id', (req, res) => {
     } else {
       const device = results[0];
 
-      // delete device紀錄
+      // 删除设备记录
       db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
         if (deleteError) {
           console.error('Error deleting device:', deleteError);
           res.status(500).send('Error deleting device');
         } else {
-          // 更新 total 表中的 currentcount
-          const updateQuery = `
+          // 更新 total 表中的 currentcount, HuYao, GDL 和 NaQing
+          const updateCurrentCountQuery = `
             UPDATE total
             SET currentcount = (
               SELECT IFNULL(SUM(count), 0)
               FROM devices
+              WHERE name = ? AND model = ? 
+            ),
+            HuYao = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'HuYao'
+            ),
+            GDL = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'GDL'
+            ),
+            NaQing = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
               WHERE name = ? AND model = ?
+            ) - (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'HuYao'
+            ) - (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'GDL'
             )
             WHERE name = ? AND model = ?
           `;
-          const updateValues = [device.name, device.model, device.name, device.model];
+          const updateCurrentCountValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model, device.name, device.name, device.name, device.model];
 
-          db.query(updateQuery, updateValues, (updateError, updateResults) => {
+          // 更新 currentcount, HuYao, GDL 和 NaQing
+          db.query(updateCurrentCountQuery, updateCurrentCountValues, (updateError, updateResults) => {
             if (updateError) {
-              console.error('Error updating currentcount:', updateError);
-              res.status(500).send('Error updating currentcount');
+              console.error('Error updating total:', updateError);
+              res.status(500).send('Error updating total');
             } else {
-              res.status(204).send(); // No content response
+              res.sendStatus(200);
             }
           });
         }
@@ -112,28 +159,28 @@ app.get('/api/search', (req, res) => {
   const values = [];
 
   if (owner) {
-    query += ' AND owner = ?';
-    values.push(owner);
+    query += ' AND owner LIKE ?';
+    values.push(`%${owner}%`);
   }
   if (date) {
     query += ' AND date = ?';
     values.push(date);
   }
   if (name) {
-    query += ' AND name = ?';
-    values.push(name);
+    query += ' AND name LIKE ?';
+    values.push(`%${name}%`);
   }
   if (model) {
-    query += ' AND model = ?';
-    values.push(model);
+    query += ' AND model LIKE ?';
+    values.push(`%${model}%`);
   }
   if (project) {
-    query += ' AND project = ?';
-    values.push(project);
+    query += ' AND project LIKE ?';
+    values.push(`%${project}%`);
   }
   if (location) {
-    query += ' AND location = ?';
-    values.push(location);
+    query += ' AND location LIKE ?';
+    values.push(`%${location}%`);
   }
 
   db.query(query, values, (error, results) => {
@@ -146,7 +193,39 @@ app.get('/api/search', (req, res) => {
   });
 });
 
-// Get all totals
+// Update total table
+app.post('/api/updateTotal', (req, res) => {
+  const updateQuery = `
+    UPDATE total
+    SET currentcount = (
+      SELECT IFNULL(SUM(count), 0)
+      FROM devices
+      WHERE total.name = devices.name AND total.model = devices.model AND devices.location = 'NaQing(INPUT)'
+    ),
+    HuYao = (
+      SELECT IFNULL(SUM(count), 0)
+      FROM devices
+      WHERE total.name = devices.name AND location = 'HuYao'
+    ),
+    GDL = (
+      SELECT IFNULL(SUM(count), 0)
+      FROM devices
+      WHERE total.name = devices.name AND location = 'GDL'
+    ),
+    NaQing = currentcount - HuYao - GDL
+  `;
+
+  db.query(updateQuery, (error, results) => {
+    if (error) {
+      console.error('Error updating total:', error);
+      res.status(500).send('Error updating total');
+    } else {
+      res.send('Total updated successfully');
+    }
+  });
+});
+
+// Get total table
 app.get('/api/totals', (req, res) => {
   db.query('SELECT * FROM total', (error, results) => {
     if (error) {
@@ -158,15 +237,7 @@ app.get('/api/totals', (req, res) => {
   });
 });
 
-// 返回前端的 index.html 文件
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
 const port = 3000;
-const host = '0.0.0.0';  // ??監聽所有網路街口??
-
-app.listen(port, host, () => {
-  console.log(`Server running on http://${host}:${port}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
-

@@ -97,38 +97,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // check total value
     totalButton.addEventListener('click', () => {
-        fetch('/api/totals')
-            .then(response => response.json())
-            .then(data => {
-                deviceList.innerHTML = ''; // Clear list
-
-                // Create 表格的行總數
-                data.forEach(item => {
-                    const row = document.createElement('tr');
-
-                    row.innerHTML = `
-                        <td>${item.name}</td>
-                        <td>${item.model}</td>
-                        <td>${item.totalcount}</td>
-                        <td>${item.currentcount}</td>
+        // 先调用更新 total 的 API
+        fetch('/api/updateTotal', {
+            method: 'POST'
+        })
+        .then(response => response.text())
+        .then(message => {
+            console.log(message);
+            // 更新成功后获取 total 表的数据
+            fetch('/api/totals')
+                .then(response => response.json())
+                .then(data => {
+                    deviceList.innerHTML = ''; // 清空表格
+    
+                    // 创建总数表格行
+                    // 要修改 currentcont ->receivedcount
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+    
+                        row.innerHTML = `
+                            <td>${item.name}</td>
+                            <td>${item.model}</td>
+                            <td>${item.totalcount}</td>
+                            <td>${item.currentcount}</td>
+                            <td>${item.NaQing}</td>
+                            <td>${item.HuYao}</td>
+                            <td>${item.GDL}</td>
+                        `;
+    
+                        deviceList.appendChild(row);
+                    });
+    
+                    // 更新表格标题为总数数据表格标题
+                    const headers = document.querySelector('.device-list-container thead tr');
+                    headers.innerHTML = `
+                        <th>Name</th>
+                        <th>Model</th>
+                        <th>Total Count</th>
+                        <th>Current Count</th>
+                        <th>NaQing</th>
+                        <th>HuYao</th>
+                        <th>GDL</th>
                     `;
-
-                    deviceList.appendChild(row);
+                })
+                .catch(error => {
+                    console.error('Error fetching totals:', error);
                 });
-
-                // Update list title to "total" format
-                const headers = document.querySelector('.device-list-container thead tr');
-                headers.innerHTML = `
-                    <th>Name</th>
-                    <th>Model</th>
-                    <th>Total Count</th>
-                    <th>Current Count</th>
-                `;
-            })
-            .catch(error => {
-                console.error('Error fetching totals:', error);
-            });
+        })
+        .catch(error => {
+            console.error('Error updating total:', error);
+        });
     });
+    
 
     // add device in "devies" list
     function addDeviceToTable(device) {

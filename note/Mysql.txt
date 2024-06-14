@@ -94,3 +94,35 @@ VALUES
 ('Transceiver(MMA4Z00-NS)','Transceiver','1000'),
 ('Transceiver(MMA4Z00-NS400)','Transceiver','673'),
 ('Transceiver(MMA1Z00-NS400)','Transceiver','264');
+
+#Modify 欄位name
+mysql> UPDATE total
+    -> SET name = 'Transceiver(MMA4Z00-NS400)'
+    -> WHERE id = 14;
+
+#Add table's titel
+mysql> ALTER TABLE total
+    -> ADD Naqing VARCHAR(255) NOT NULL,
+    -> ADD HuYao VARCHAR(255) NOT NULL,
+    -> ADD GDL VARCHAR(255) NOT NULL;
+
+#Add mutiple value
+UPDATE total
+SET totalcount = CASE
+    WHEN id = 1 THEN 27
+    WHEN id = 2 THEN 2
+    WHEN id = 3 THEN 2
+    WHEN id = 4 THEN 7
+    WHEN id = 5 THEN 4
+    WHEN id = 6 THEN 2331
+    WHEN id = 7 THEN 127
+    WHEN id = 8 THEN 57
+    WHEN id = 9 THEN 94
+    WHEN id = 10 THEN 2
+    WHEN id = 11 THEN 6
+    WHEN id = 12 THEN 10
+    WHEN id = 13 THEN 1000
+    WHEN id = 14 THEN 673
+    WHEN id = 15 THEN 264
+END
+WHERE id IN (1, 15);
