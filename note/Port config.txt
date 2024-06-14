@@ -1,0 +1,4 @@
+Firewall -> 輸入規則 -> 新增規則
+
+規則類型: 連接埠
+TCP -> 特定Port num

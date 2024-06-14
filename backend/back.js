@@ -11,7 +11,7 @@ const dbconfig = {
 
 // setup backup path
 // const backupDir = path.join(__dirname, '../backup_db');
-const backupDir = 'D:\\backup_db';
+const backupDir = 'C:\\backup_db';
 if (!fs.existsSync(backupDir)) {
     fs.mkdirSync(backupDir);
 }

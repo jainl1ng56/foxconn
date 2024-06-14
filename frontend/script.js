@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const deviceList = document.getElementById('device-list');
     const queryButton = document.getElementById('query-button');
     const totalButton = document.getElementById('total-button');
+    const claerbutton = document.getElementById('clear-button');
 
     // Get devices table
     function fetchDevices() {
@@ -62,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchDevices(); // reload device table & Update table 內容
                 deviceForm.reset();
             });
+    });
+
+    claerbutton.addEventListener('click', () => {
+        deviceForm.reset();
+
     });
 
     // Query device
@@ -140,11 +146,13 @@ document.addEventListener('DOMContentLoaded', () => {
         deviceList.appendChild(row);
 
         row.querySelector('button').addEventListener('click', () => {
-            fetch(`/api/devices/${device.id}`, {
-                method: 'DELETE'
-            }).then(() => {
-                row.remove();
-            });
+            if(confirm('Are you sure you want to delete this devices?')) {
+                fetch(`/api/devices/${device.id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    row.remove();
+                });
+            }
         });
     }
 });
