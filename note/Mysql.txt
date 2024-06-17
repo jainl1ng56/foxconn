@@ -127,7 +127,7 @@ SET totalcount = CASE
 END
 WHERE id IN (1, 15);
 
-CREATE TABLE deleted_devices (
+CREATE TABLE trash (
     id INT AUTO_INCREMENT PRIMARY KEY,
     owner VARCHAR(255),
     date DATE,
