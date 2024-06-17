@@ -35,40 +35,29 @@ app.post('/api/devices', (req, res) => {
       const newDeviceId = results.insertId; // 获取插入的设备ID
       const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
 
-      // 更新 total 表中的 currentcount, HuYao, GDL 和 NaQing
+      // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
       const updateQuery = `
         UPDATE total
-        SET currentcount = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND model = ?
-        ),
-        HuYao = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'HuYao'
-        ),
-        GDL = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'GDL'
-        ),
-        NaQing = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND model = ?
-        ) - (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'HuYao'
-        ) - (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'GDL'
-        )
+        SET 
+          receivedcount = (
+            SELECT IFNULL(SUM(count), 0)
+            FROM devices
+            WHERE name = ? AND model = ?
+          ),
+          HuYao = (
+            SELECT IFNULL(SUM(count), 0)
+            FROM devices
+            WHERE name = ? AND location = 'HuYao'
+          ),
+          GDL = (
+            SELECT IFNULL(SUM(count), 0)
+            FROM devices
+            WHERE name = ? AND location = 'GDL'
+          ),
+          NaQing = receivedcount - HuYao - GDL
         WHERE name = ? AND model = ?
       `;
-      const updateValues = [name, model, name, name, name, name, model, name, name, name, model];
+      const updateValues = [name, model, name, name, name, name, model];
 
       db.query(updateQuery, updateValues, (updateError, updateResults) => {
         if (updateError) {
@@ -102,43 +91,31 @@ app.delete('/api/devices/:id', (req, res) => {
           console.error('Error deleting device:', deleteError);
           res.status(500).send('Error deleting device');
         } else {
-          // 更新 total 表中的 currentcount, HuYao, GDL 和 NaQing
-          const updateCurrentCountQuery = `
+          // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
+          const updateQuery = `
             UPDATE total
-            SET currentcount = (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND model = ? 
-            ),
-            HuYao = (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND location = 'HuYao'
-            ),
-            GDL = (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND location = 'GDL'
-            ),
-            NaQing = (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND model = ?
-            ) - (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND location = 'HuYao'
-            ) - (
-              SELECT IFNULL(SUM(count), 0)
-              FROM devices
-              WHERE name = ? AND location = 'GDL'
-            )
+            SET 
+              receivedcount = (
+                SELECT IFNULL(SUM(count), 0)
+                FROM devices
+                WHERE name = ? AND model = ?
+              ),
+              HuYao = (
+                SELECT IFNULL(SUM(count), 0)
+                FROM devices
+                WHERE name = ? AND location = 'HuYao'
+              ),
+              GDL = (
+                SELECT IFNULL(SUM(count), 0)
+                FROM devices
+                WHERE name = ? AND location = 'GDL'
+              ),
+              NaQing = receivedcount - HuYao - GDL
             WHERE name = ? AND model = ?
           `;
-          const updateCurrentCountValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model, device.name, device.name, device.name, device.model];
+          const updateValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model];
 
-          // 更新 currentcount, HuYao, GDL 和 NaQing
-          db.query(updateCurrentCountQuery, updateCurrentCountValues, (updateError, updateResults) => {
+          db.query(updateQuery, updateValues, (updateError, updateResults) => {
             if (updateError) {
               console.error('Error updating total:', updateError);
               res.status(500).send('Error updating total');
@@ -197,22 +174,23 @@ app.get('/api/search', (req, res) => {
 app.post('/api/updateTotal', (req, res) => {
   const updateQuery = `
     UPDATE total
-    SET currentcount = (
-      SELECT IFNULL(SUM(count), 0)
-      FROM devices
-      WHERE total.name = devices.name AND total.model = devices.model AND devices.location = 'NaQing(INPUT)'
-    ),
-    HuYao = (
-      SELECT IFNULL(SUM(count), 0)
-      FROM devices
-      WHERE total.name = devices.name AND location = 'HuYao'
-    ),
-    GDL = (
-      SELECT IFNULL(SUM(count), 0)
-      FROM devices
-      WHERE total.name = devices.name AND location = 'GDL'
-    ),
-    NaQing = currentcount - HuYao - GDL
+    SET 
+      receivedcount = (
+        SELECT IFNULL(SUM(count), 0)
+        FROM devices
+        WHERE total.name = devices.name AND total.model = devices.model
+      ),
+      HuYao = (
+        SELECT IFNULL(SUM(count), 0)
+        FROM devices
+        WHERE total.name = devices.name AND location = 'HuYao'
+      ),
+      GDL = (
+        SELECT IFNULL(SUM(count), 0)
+        FROM devices
+        WHERE total.name = devices.name AND location = 'GDL'
+      ),
+      NaQing = receivedcount - HuYao - GDL
   `;
 
   db.query(updateQuery, (error, results) => {

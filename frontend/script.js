@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <td>${item.name}</td>
                             <td>${item.model}</td>
                             <td>${item.totalcount}</td>
-                            <td>${item.currentcount}</td>
+                            <td>${item.receivedcount}</td>
                             <td>${item.NaQing}</td>
                             <td>${item.HuYao}</td>
                             <td>${item.GDL}</td>
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <th>Name</th>
                         <th>Model</th>
                         <th>Total Count</th>
-                        <th>Current Count</th>
+                        <th>Received Count</th>
                         <th>NaQing</th>
                         <th>HuYao</th>
                         <th>GDL</th>
