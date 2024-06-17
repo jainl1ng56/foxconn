@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `project` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 71 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 72 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: total
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `total` (
   `name` varchar(255) NOT NULL,
   `model` varchar(255) NOT NULL,
   `totalcount` int NOT NULL,
-  `currentcount` int DEFAULT NULL,
+  `receivedcount` int DEFAULT NULL,
   `NaQing` varchar(255) NOT NULL,
   `HuYao` varchar(255) NOT NULL,
   `GDL` varchar(255) NOT NULL,
@@ -39,16 +39,21 @@ CREATE TABLE IF NOT EXISTS `total` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
-# SCHEMA DUMP FOR TABLE: users
+# SCHEMA DUMP FOR TABLE: trash
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `trash` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+  `owner` varchar(255) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `count` int DEFAULT NULL,
+  `project` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 5 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: devices
@@ -89,80 +94,14 @@ INSERT INTO
   )
 VALUES
   (
-    67,
+    71,
     'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
+    '2024-06-17',
+    'SN5600(920-9N42F-00RI-7C0)',
     'Switch',
-    7,
-    'Microsoft',
-    'GDL'
-  );
-INSERT INTO
-  `devices` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`
-  )
-VALUES
-  (
-    68,
-    'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    5,
-    'Microsoft',
-    'HuYao'
-  );
-INSERT INTO
-  `devices` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`
-  )
-VALUES
-  (
-    69,
-    'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    4,
-    'NVIDIA',
+    10,
+    '',
     'NaQing(INPUT)'
-  );
-INSERT INTO
-  `devices` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`
-  )
-VALUES
-  (
-    70,
-    'Rayden',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    2,
-    'NVIDIA',
-    'Naqing_RA01'
   );
 
 # ------------------------------------------------------------
@@ -175,7 +114,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -186,10 +125,10 @@ VALUES
     'QM9700(MQM9700-NS2R)',
     'Switch',
     27,
-    26,
-    '14',
-    '5',
-    '7'
+    22,
+    '22',
+    '0',
+    '0'
   );
 INSERT INTO
   `total` (
@@ -197,7 +136,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -208,8 +147,8 @@ VALUES
     'SN5600(920-9N42F-00RI-7C0)',
     'Switch',
     2,
-    0,
-    '0',
+    10,
+    '10',
     '0',
     '0'
   );
@@ -219,7 +158,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -241,7 +180,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -263,7 +202,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -276,7 +215,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -289,7 +228,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -302,7 +241,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -324,7 +263,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -346,7 +285,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -368,7 +307,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -390,7 +329,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -412,7 +351,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -434,7 +373,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -456,7 +395,7 @@ INSERT INTO
     `name`,
     `model`,
     `totalcount`,
-    `currentcount`,
+    `receivedcount`,
     `NaQing`,
     `HuYao`,
     `GDL`
@@ -474,9 +413,105 @@ VALUES
   );
 
 # ------------------------------------------------------------
-# DATA DUMP FOR TABLE: users
+# DATA DUMP FOR TABLE: trash
 # ------------------------------------------------------------
 
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    1,
+    'Rayden',
+    '2024-06-14',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    2,
+    'NVIDIA',
+    'Naqing_RA01',
+    '2024-06-17 11:34:55'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    2,
+    'Jimmy',
+    '2024-06-14',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    4,
+    'NVIDIA',
+    'NaQing(INPUT)',
+    '2024-06-17 11:34:56'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    3,
+    'Jimmy',
+    '2024-06-14',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'HuYao',
+    '2024-06-17 11:34:56'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    4,
+    'Jimmy',
+    '2024-06-14',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    7,
+    'Microsoft',
+    'GDL',
+    '2024-06-17 11:34:57'
+  );
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
