@@ -85,43 +85,53 @@ app.delete('/api/devices/:id', (req, res) => {
     } else {
       const device = results[0];
 
-      // 删除设备记录
-      db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
-        if (deleteError) {
-          console.error('Error deleting device:', deleteError);
-          res.status(500).send('Error deleting device');
-        } else {
-          // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
-          const updateQuery = `
-            UPDATE total
-            SET 
-              receivedcount = (
-                SELECT IFNULL(SUM(count), 0)
-                FROM devices
-                WHERE name = ? AND model = ?
-              ),
-              HuYao = (
-                SELECT IFNULL(SUM(count), 0)
-                FROM devices
-                WHERE name = ? AND location = 'HuYao'
-              ),
-              GDL = (
-                SELECT IFNULL(SUM(count), 0)
-                FROM devices
-                WHERE name = ? AND location = 'GDL'
-              ),
-              NaQing = receivedcount - HuYao - GDL
-            WHERE name = ? AND model = ?
-          `;
-          const updateValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model];
+      const deleteRecordQuery = 'INSERT INTO trash (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      const deleteRecordValues = [device.owner, device.date, device.name, device.model, device.count, device.project, device.location];
 
-          db.query(updateQuery, updateValues, (updateError, updateResults) => {
-            if (updateError) {
-              console.error('Error updating total:', updateError);
-              res.status(500).send('Error updating total');
+      db.query(deleteRecordQuery, deleteRecordValues, (deleteRecordError) => {
+        if (deleteRecordError) {
+          console.error('Error inserting into trash:', deleteRecordError);
+          res.status(500).send('Error inserting into trash');
+        } else {
+          // 删除设备记录
+          db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
+            if (deleteError) {
+              console.error('Error deleting device:', deleteError);
+              res.status(500).send('Error deleting device');
             } else {
-              res.sendStatus(200);
-            }
+              // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
+              const updateQuery = `
+                UPDATE total
+                SET 
+                  receivedcount = (
+                    SELECT IFNULL(SUM(count), 0)
+                    FROM devices
+                    WHERE name = ? AND model = ?
+                  ),
+                  HuYao = (
+                    SELECT IFNULL(SUM(count), 0)
+                    FROM devices
+                    WHERE name = ? AND location = 'HuYao'
+                  ),
+                  GDL = (
+                    SELECT IFNULL(SUM(count), 0)
+                    FROM devices
+                    WHERE name = ? AND location = 'GDL'
+                  ),
+                  NaQing = receivedcount - HuYao - GDL
+                WHERE name = ? AND model = ?
+              `;
+              const updateValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model];
+
+              db.query(updateQuery, updateValues, (updateError, updateResults) => {
+                if (updateError) {
+                  console.error('Error updating total:', updateError);
+                  res.status(500).send('Error updating total');
+                } else {
+                  res.sendStatus(200);
+                }
+              });  
+            } 
           });
         }
       });
