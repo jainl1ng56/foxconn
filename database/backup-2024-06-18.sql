@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `project` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 72 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 92 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: total
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `trash` (
   `location` varchar(255) DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 5 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: devices
@@ -72,13 +72,13 @@ INSERT INTO
   )
 VALUES
   (
-    66,
-    'Dennis',
-    '2024-06-14',
+    86,
+    'Oliver',
+    '2024-06-17',
     'QM9700(MQM9700-NS2R)',
     'Switch',
     22,
-    'NVIDIA',
+    'none',
     'NaQing(INPUT)'
   );
 INSERT INTO
@@ -94,13 +94,101 @@ INSERT INTO
   )
 VALUES
   (
-    71,
-    'Jimmy',
+    87,
+    'Oliver',
     '2024-06-17',
-    'SN5600(920-9N42F-00RI-7C0)',
-    'Switch',
-    10,
-    '',
+    'DAC(MCP1600-C002E30N)',
+    'Cable',
+    32,
+    'none',
+    'NaQing(INPUT)'
+  );
+INSERT INTO
+  `devices` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`
+  )
+VALUES
+  (
+    88,
+    'Oliver',
+    '2024-06-17',
+    'AOC(MFS1S00-H005V)',
+    'Cable',
+    32,
+    'none',
+    'NaQing(INPUT)'
+  );
+INSERT INTO
+  `devices` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`
+  )
+VALUES
+  (
+    89,
+    'Oliver',
+    '2024-06-17',
+    'CX7(MCX75310AAS-NEAT)',
+    'Card',
+    6,
+    'none',
+    'NaQing(INPUT)'
+  );
+INSERT INTO
+  `devices` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`
+  )
+VALUES
+  (
+    90,
+    'Oliver',
+    '2024-06-17',
+    'BlueField 3(900-9D3B6-00CV-AA0)',
+    'Card',
+    2,
+    'none',
+    'NaQing(INPUT)'
+  );
+INSERT INTO
+  `devices` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`
+  )
+VALUES
+  (
+    91,
+    'Oliver',
+    '2024-06-17',
+    'Fiber splitter cables(MFP7E20-N005)',
+    'Cable',
+    19,
+    'none',
     'NaQing(INPUT)'
   );
 
@@ -147,8 +235,8 @@ VALUES
     'SN5600(920-9N42F-00RI-7C0)',
     'Switch',
     2,
-    10,
-    '10',
+    0,
+    '0',
     '0',
     '0'
   );
@@ -234,7 +322,16 @@ INSERT INTO
     `GDL`
   )
 VALUES
-  (7, 'AOC(MFS1S00-H005V)', 'Cable', 127, 0, '0', '0', '0');
+  (
+    7,
+    'AOC(MFS1S00-H005V)',
+    'Cable',
+    127,
+    32,
+    '32',
+    '0',
+    '0'
+  );
 INSERT INTO
   `total` (
     `id`,
@@ -252,8 +349,8 @@ VALUES
     'Fiber splitter cables(MFP7E20-N005)',
     'Cable',
     57,
-    0,
-    '0',
+    19,
+    '19',
     '0',
     '0'
   );
@@ -274,8 +371,8 @@ VALUES
     'DAC(MCP1600-C002E30N)',
     'Cable',
     94,
-    0,
-    '0',
+    32,
+    '32',
     '0',
     '0'
   );
@@ -296,8 +393,8 @@ VALUES
     'BlueField 3(900-9D3B6-00CV-AA0)',
     'Card',
     2,
-    0,
-    '0',
+    2,
+    '2',
     '0',
     '0'
   );
@@ -318,8 +415,8 @@ VALUES
     'CX7(MCX75310AAS-NEAT)',
     'Card',
     6,
-    0,
-    '0',
+    6,
+    '6',
     '0',
     '0'
   );
@@ -438,7 +535,7 @@ VALUES
     2,
     'NVIDIA',
     'Naqing_RA01',
-    '2024-06-17 11:34:55'
+    '2024-06-17 11:52:23'
   );
 INSERT INTO
   `trash` (
@@ -462,7 +559,7 @@ VALUES
     4,
     'NVIDIA',
     'NaQing(INPUT)',
-    '2024-06-17 11:34:56'
+    '2024-06-17 11:53:39'
   );
 INSERT INTO
   `trash` (
@@ -486,7 +583,7 @@ VALUES
     5,
     'Microsoft',
     'HuYao',
-    '2024-06-17 11:34:56'
+    '2024-06-17 11:53:40'
   );
 INSERT INTO
   `trash` (
@@ -510,7 +607,391 @@ VALUES
     7,
     'Microsoft',
     'GDL',
-    '2024-06-17 11:34:57'
+    '2024-06-17 11:53:41'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    5,
+    'Dennis',
+    '2024-06-14',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'NVIDIA',
+    'NaQing(INPUT)',
+    '2024-06-17 11:53:41'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    6,
+    'Jimmy',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    '',
+    'NaQing(INPUT)',
+    '2024-06-17 13:39:40'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    7,
+    'Jeff',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'HuYao',
+    '2024-06-17 13:39:41'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    8,
+    'Oliver',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'none',
+    'NaQing(INPUT)',
+    '2024-06-17 13:48:47'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    9,
+    'Jeff',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'HuYao',
+    '2024-06-17 13:48:47'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    10,
+    'Oliver',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'none',
+    'NaQing(INPUT)',
+    '2024-06-17 13:49:14'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    11,
+    'Oliver',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'none',
+    'NaQing(INPUT)',
+    '2024-06-17 13:49:14'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    12,
+    'Jimmy',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'GDL',
+    '2024-06-17 13:49:59'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    13,
+    'Jimmy',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'GDL',
+    '2024-06-17 13:50:01'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    14,
+    'Oliver',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'none',
+    'NaQing(INPUT)',
+    '2024-06-17 13:50:15'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    15,
+    'Jimmy',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'GDL',
+    '2024-06-17 13:50:16'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    16,
+    'Jimmy',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'Microsoft',
+    'GDL',
+    '2024-06-17 17:04:27'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    17,
+    'Oliver',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    22,
+    'none',
+    'NaQing(INPUT)',
+    '2024-06-17 17:05:05'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    18,
+    'Li',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    5,
+    'NVIDIA',
+    'Naqing_RA01',
+    '2024-06-17 17:05:17'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    19,
+    'Jeff',
+    '2024-06-17',
+    'QM9700(MQM9700-NS2R)',
+    'Switch',
+    7,
+    'NVIDIA',
+    'HuYao',
+    '2024-06-17 17:12:25'
+  );
+INSERT INTO
+  `trash` (
+    `id`,
+    `owner`,
+    `date`,
+    `name`,
+    `model`,
+    `count`,
+    `project`,
+    `location`,
+    `deleted_at`
+  )
+VALUES
+  (
+    20,
+    'Kevin',
+    '2024-06-17',
+    'BlueField 3(900-9D3B6-00CV-AA0)',
+    'Card',
+    2,
+    'Microsoft',
+    'Naqing_RA04',
+    '2024-06-17 17:12:27'
   );
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
