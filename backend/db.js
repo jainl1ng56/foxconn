@@ -1,11 +1,19 @@
 const mysql = require('mysql2');
 
-const pool = mysql.createPool({
-  connectionLimit: 10,
+const connection = mysql.createConnection({
+  connectionLimit : 10,
   host: 'localhost',
   user: 'manager',
   password: '111111',
   database: 'warehouse'
 });
 
-module.exports = pool.promise(); // 使用 promise 方式
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err.stack);
+    return;
+  }
+  console.log('Connected to the database.');
+});
+
+module.exports = connection;

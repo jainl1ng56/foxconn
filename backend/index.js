@@ -10,32 +10,36 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Get all devices
-app.get('/api/devices', async (req, res) => {
-  try {
-    const [results] = await db.query('SELECT * FROM devices');
-    res.json(results);
-  } catch (error) {
-    console.error('Error fetching devices:', error);
-    res.status(500).send('Error fetching devices');
-  }
+app.get('/api/devices', (req, res) => {
+  db.query('SELECT * FROM devices', (error, results) => {
+    if (error) {
+      console.error('Error fetching devices:', error);
+      res.status(500).send('Error fetching devices');
+    } else {
+      res.json(results);
+    }
+  });
 });
 
 // Add a new device
-app.post('/api/devices', async (req, res) => {
+app.post('/api/devices', (req, res) => {
   const { owner, date, name, model, count, project, location } = req.body;
   const query = 'INSERT INTO devices (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
   const values = [owner, date, name, model, count, project, location];
 
-  try {
-    const [results] = await db.query(query, values);
-    const newDeviceId = results.insertId; // 获取插入的设备ID
-    const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Error adding device:', error);
+      res.status(500).send('Error adding device');
+    } else {
+      const newDeviceId = results.insertId; // 获取插入的设备ID
+      const newDevice = { id: newDeviceId, owner, date, name, model, count, project, location };
 
-    // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
-    const updateQuery = `
-      UPDATE total
-      SET 
-        receivedcount = (
+      // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
+      const updateQuery = `
+        UPDATE total
+        SET 
+          receivedcount = (
           SELECT IFNULL(SUM(count), 0)
           FROM devices
           WHERE name = ? AND model = ?
@@ -63,83 +67,104 @@ app.post('/api/devices', async (req, res) => {
           FROM devices
           WHERE name = ? AND location = 'GDL'
         )
-      WHERE name = ? AND model = ?
-    `;
-    const updateValues = [name, model, name, name, name, name, model, name, name, name, model];
+        WHERE name = ? AND model = ?
+      `;
+      const updateValues = [name, model, name, name, name, name, model, name, name, name, model];
 
-    await db.query(updateQuery, updateValues);
-    res.json(newDevice); // 返回包含设备ID的设备对象
-  } catch (error) {
-    console.error('Error adding device:', error);
-    res.status(500).send('Error adding device');
-  }
+      db.query(updateQuery, updateValues, (updateError, updateResults) => {
+        if (updateError) {
+          console.error('Error updating total:', updateError);
+          res.status(500).send('Error updating total');
+        } else {
+          res.json(newDevice); // 返回包含设备ID的设备对象
+        }
+      });
+    }
+  });
 });
 
 // Delete a device
-app.delete('/api/devices/:id', async (req, res) => {
+app.delete('/api/devices/:id', (req, res) => {
   const deviceId = req.params.id;
 
-  try {
-    const [results] = await db.query('SELECT * FROM devices WHERE id = ?', [deviceId]);
-    if (results.length === 0) {
+  // 在删除设备前，先获取设备信息
+  db.query('SELECT * FROM devices WHERE id = ?', [deviceId], (error, results) => {
+    if (error) {
+      console.error('Error fetching device:', error);
+      res.status(500).send('Error fetching device');
+    } else if (results.length === 0) {
       res.status(404).send('Device not found');
-      return;
+    } else {
+      const device = results[0];
+
+      const deleteRecordQuery = 'INSERT INTO trash (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      const deleteRecordValues = [device.owner, device.date, device.name, device.model, device.count, device.project, device.location];
+
+      db.query(deleteRecordQuery, deleteRecordValues, (deleteRecordError) => {
+        if (deleteRecordError) {
+          console.error('Error inserting into trash:', deleteRecordError);
+          res.status(500).send('Error inserting into trash');
+        } else {
+          // 删除设备记录
+          db.query('DELETE FROM devices WHERE id = ?', [deviceId], (deleteError, deleteResults) => {
+            if (deleteError) {
+              console.error('Error deleting device:', deleteError);
+              res.status(500).send('Error deleting device');
+            } else {
+              // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
+              const updatereceivedcountQuery = `
+                UPDATE total
+                SET 
+                  receivedcount = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND model = ? 
+            ),
+            HuYao = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'HuYao'
+            ),
+            GDL = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'GDL'
+            ),
+            NaQing = (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND model = ?
+            ) - (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'HuYao'
+            ) - (
+              SELECT IFNULL(SUM(count), 0)
+              FROM devices
+              WHERE name = ? AND location = 'GDL'
+            )
+            WHERE name = ? AND model = ?
+          `;
+          const updateCurrentCountValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model, device.name, device.name, device.name, device.model];
+
+              db.query(updatereceivedcountQuery, updateCurrentCountValues, (updateError, updateResults) => {
+                if (updateError) {
+                  console.error('Error updating total:', updateError);
+                  res.status(500).send('Error updating total');
+                } else {
+                  res.sendStatus(200);
+                }
+              });  
+            } 
+          });
+        }
+      });
     }
-    const device = results[0];
-
-    const deleteRecordQuery = 'INSERT INTO trash (owner, date, name, model, count, project, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const deleteRecordValues = [device.owner, device.date, device.name, device.model, device.count, device.project, device.location];
-
-    await db.query(deleteRecordQuery, deleteRecordValues);
-
-    await db.query('DELETE FROM devices WHERE id = ?', [deviceId]);
-
-    // 更新 total 表中的 receivedcount, HuYao, GDL 和 NaQing
-    const updateQuery = `
-      UPDATE total
-      SET 
-        receivedcount = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND model = ?
-        ),
-        HuYao = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'HuYao'
-        ),
-        GDL = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'GDL'
-        ),
-        NaQing = (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND model = ?
-        ) - (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'HuYao'
-        ) - (
-          SELECT IFNULL(SUM(count), 0)
-          FROM devices
-          WHERE name = ? AND location = 'GDL'
-        )
-      WHERE name = ? AND model = ?
-    `;
-    const updateValues = [device.name, device.model, device.name, device.name, device.name, device.name, device.model, device.name, device.name, device.name, device.model];
-
-    await db.query(updateQuery, updateValues);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error deleting device:', error);
-    res.status(500).send('Error deleting device');
-  }
+  });
 });
 
 // Search devices
-app.get('/api/search', async (req, res) => {
+app.get('/api/search', (req, res) => {
   const { owner, date, name, model, project, location } = req.query;
   let query = 'SELECT * FROM devices WHERE 1=1';
   const values = [];
@@ -169,24 +194,25 @@ app.get('/api/search', async (req, res) => {
     values.push(`%${location}%`);
   }
 
-  try {
-    const [results] = await db.query(query, values);
-    res.json(results);
-  } catch (error) {
-    console.error('Error searching devices:', error);
-    res.status(500).send('Error searching devices');
-  }
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Error searching devices:', error);
+      res.status(500).send('Error searching devices');
+    } else {
+      res.json(results);
+    }
+  });
 });
 
 // Update total table
-app.post('/api/updateTotal', async (req, res) => {
+app.post('/api/updateTotal', (req, res) => {
   const updateQuery = `
     UPDATE total
     SET 
       receivedcount = (
         SELECT IFNULL(SUM(count), 0)
         FROM devices
-        WHERE total.name = devices.name AND total.model = devices.model
+        WHERE total.name = devices.name AND total.model = devices.model AND devices.location = 'NaQing(INPUT)'
       ),
       HuYao = (
         SELECT IFNULL(SUM(count), 0)
@@ -201,24 +227,26 @@ app.post('/api/updateTotal', async (req, res) => {
       NaQing = receivedcount - HuYao - GDL
   `;
 
-  try {
-    await db.query(updateQuery);
-    res.send('Total updated successfully');
-  } catch (error) {
-    console.error('Error updating total:', error);
-    res.status(500).send('Error updating total');
-  }
+  db.query(updateQuery, (error, results) => {
+    if (error) {
+      console.error('Error updating total:', error);
+      res.status(500).send('Error updating total');
+    } else {
+      res.send('Total updated successfully');
+    }
+  });
 });
 
 // Get total table
-app.get('/api/totals', async (req, res) => {
-  try {
-    const [results] = await db.query('SELECT * FROM total');
-    res.json(results);
-  } catch (error) {
-    console.error('Error fetching totals:', error);
-    res.status(500).send('Error fetching totals');
-  }
+app.get('/api/totals', (req, res) => {
+  db.query('SELECT * FROM total', (error, results) => {
+    if (error) {
+      console.error('Error fetching totals:', error);
+      res.status(500).send('Error fetching totals');
+    } else {
+      res.json(results);
+    }
+  });
 });
 
 const port = 3000;
