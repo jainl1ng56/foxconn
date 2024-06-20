@@ -145,28 +145,28 @@ app.get('/api/search', async (req, res) => {
   const values = [];
 
   if (owner) {
-    query += ' AND owner LIKE ?';
-    values.push(`%${owner}%`);
+    query += ' AND owner = ?';
+    values.push(owner);
   }
   if (date) {
     query += ' AND date = ?';
     values.push(date);
   }
   if (name) {
-    query += ' AND name LIKE ?';
-    values.push(`%${name}%`);
+    query += ' AND name = ?';
+    values.push(name);
   }
   if (model) {
-    query += ' AND model LIKE ?';
-    values.push(`%${model}%`);
+    query += ' AND model = ?';
+    values.push(model);
   }
   if (project) {
-    query += ' AND project LIKE ?';
-    values.push(`%${project}%`);
+    query += ' AND project = ?';
+    values.push(project);
   }
   if (location) {
-    query += ' AND location LIKE ?';
-    values.push(`%${location}%`);
+    query += ' AND location = ?';
+    values.push(location);
   }
 
   try {
@@ -222,8 +222,12 @@ app.get('/api/totals', async (req, res) => {
 });
 
 // Get detailed device information
+
 app.get('/api/deviceDetails', async (req, res) => {
-  const { name, location } = req.query;
+  const { name, location, owner, serial_number } = req.query;
+
+  console.log('Received query params:', req.query);  // 添加日志
+
   let query = 'SELECT * FROM device_info WHERE 1=1';
   const values = [];
 
@@ -235,6 +239,18 @@ app.get('/api/deviceDetails', async (req, res) => {
     query += ' AND location = ?';
     values.push(location);
   }
+  if (owner) {
+    query += ' AND owner = ?';
+    values.push(owner);
+  }
+  if (serial_number) {
+    query += ' AND serial_number = ?';
+    values.push(serial_number);
+  }
+
+  // 打印生成的查询和参数
+  console.log('Generated query:', query);
+  console.log('Query values:', values);
 
   try {
     const [results] = await db.query(query, values);
@@ -244,6 +260,31 @@ app.get('/api/deviceDetails', async (req, res) => {
     res.status(500).send('Error fetching device details');
   }
 });
+
+app.post('/api/modifyDevice', async (req, res) => {
+  const { id, location, owner } = req.body;
+
+  if (!id || !location || !owner) {
+    return res.status(400).send('Missing required fields');
+  }
+
+  const query = 'UPDATE device_info SET location = ?, owner = ? WHERE id = ?';
+  const values = [location, owner, id];
+
+  try {
+    const [result] = await db.query(query, values);
+    if (result.affectedRows > 0) {
+      res.json({ success: true });
+    } else {
+      res.status(404).send('Device not found');
+    }
+  } catch (error) {
+    console.error('Error modifying device:', error);
+    res.status(500).send('Error modifying device');
+  }
+});
+
+
 
 
 const port = 3000;

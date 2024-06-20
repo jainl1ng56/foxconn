@@ -31,7 +31,6 @@
                 <option value="Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)">Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)</option>
                 <option value="DAC(MCP1600-C002E30N)">DAC(MCP1600-C002E30N)</option>
               </select>
-
               <select id="location" name="location">
                 <option value="">Select Location</option>
                 <option value="GDL">GDL</option>
@@ -41,8 +40,25 @@
                 <option value="Naqing_RA04">Naqing_RA04</option>
                 <option value="Naqing_RA07">Naqing_RA07</option>
               </select>
+
+              <select id ="owner" name ="owner">
+                <option value="">Select Owner</option>
+                <option value="Dennis">Dennis</option>
+                <option value="Jimmy">Jimmy</option>
+                <option value="Alan">Alan</option>
+                <option value="Jeff">Jeff</option>
+                <option value="Kevin">Kevin</option>
+                <option value="Henry">Henry</option>
+                <option value="Li">Li</option>
+                <option value="Rayden">Rayden</option>
+                <option value="Oliver">Oliver</option>
+                <option value="Jed">Jed</option>
+              </select>
+              Serial_number: <input type="text" id="serial_number" name="serial_number">
               <button type="button" id="clear-button">Clear</button>
               <button type="button" id="query-button">Query</button>
+
+              
         </form>
         
       <h2>Device Information</h2>
@@ -52,6 +68,8 @@
             <th>Device Name</th>
             <th>Serial Number</th>
             <th>Location</th>
+            <th>Owner</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody id="detail-list">
@@ -60,6 +78,37 @@
     </div>
     <button class="back-button" type="button" onclick="goBack()">Back</button>
   </div>
+
+  <div class="modify-form-container" style="display:none;">
+    <form id="modify-form">
+      <input type="hidden" name="id" id="modify-id">
+      <label for="modify-location">Location:</label>
+      <select id="modify-location" name="location">
+        <option value="GDL">GDL</option>
+        <option value="HuYao">HuYao</option>
+        <option value="NaQing(INPUT)">NaQing(INPUT)</option>
+        <option value="Naqing_RA01">Naqing_RA01</option>
+        <option value="Naqing_RA04">Naqing_RA04</option>
+        <option value="Naqing_RA07">Naqing_RA07</option>
+      </select>
+      <label for="modify-owner">Owner:</label>
+      <select id="modify-owner" name="owner">
+        <option value="Dennis">Dennis</option>
+        <option value="Jimmy">Jimmy</option>
+        <option value="Alan">Alan</option>
+        <option value="Jeff">Jeff</option>
+        <option value="Kevin">Kevin</option>
+        <option value="Henry">Henry</option>
+        <option value="Li">Li</option>
+        <option value="Rayden">Rayden</option>
+        <option value="Oliver">Oliver</option>
+        <option value="Jed">Jed</option>
+      </select>
+      <button type="submit">Save Changes</button>
+      <button type="button" id="cancel-button">Cancel</button>
+    </form>
+  </div>
+
   <script>
     function goBack() {
       window.location.href = 'index.html'; // Ensure this points to your main page

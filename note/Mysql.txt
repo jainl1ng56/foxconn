@@ -147,3 +147,10 @@ CREATE TABLE device_info (
   serial_number VARCHAR(255) NOT NULL,
   location VARCHAR(255) NOT NULL
 );
+
+
+#
+INSERT INTO device_info (name,serial_number,location,owner)
+VALUES
+('QM9700(MQM9700-NS2R)','SX123456789','HuYao','Oliver'),
+('SN5600(920-9N42F-00RI-7C0)','SA987654321','Naqing','Kevin');

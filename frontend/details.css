@@ -76,4 +76,7 @@ body {
     display: inline-block;
     margin-top: 1rem;
   }
-  
+
+  .modify-form-container {
+    text-align: center;
+  }
