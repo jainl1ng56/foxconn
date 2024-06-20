@@ -15,8 +15,9 @@ CREATE TABLE IF NOT EXISTS `device_info` (
   `name` varchar(255) NOT NULL,
   `serial_number` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
+  `owner` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: devices
@@ -72,9 +73,25 @@ CREATE TABLE IF NOT EXISTS `trash` (
 # ------------------------------------------------------------
 
 INSERT INTO
-  `device_info` (`id`, `name`, `serial_number`, `location`)
+  `device_info` (`id`, `name`, `serial_number`, `location`, `owner`)
 VALUES
-  (1, 'QM9700(MQM9700-NS2R)', 'SX123456789', 'HuYao');
+  (
+    1,
+    'QM9700(MQM9700-NS2R)',
+    'SX123456789',
+    'GDL',
+    'Jeff'
+  );
+INSERT INTO
+  `device_info` (`id`, `name`, `serial_number`, `location`, `owner`)
+VALUES
+  (
+    2,
+    'SN5600(920-9N42F-00RI-7C0)',
+    'SA987654321',
+    'Naqing',
+    'Kevin'
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: devices
