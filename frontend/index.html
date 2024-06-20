@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1>SIT Warehouse Management</h1>
+    <h1>Warehouse Management</h1>
   </header>
   <div class="container">
     <div class="form-container">
@@ -66,10 +66,11 @@
         <label for="project">Project:</label>
         <select id="project" name="project">
           <option value="">Select Project</option>
+          <option value="none">none</option>
           <option value="NVIDIA">NVIDIA</option>
           <option value="Microsoft">Microsoft</option>
           <option value="AWS">AWS</option>
-          <option value="廠商為什麼還沒送來">廠商為什麼還沒送來(6189)</option>
+          <option value="豐藝(TBD)">豐藝(TBD)</option>
         </select>
 
         <label for="location">Location:</label>
@@ -86,6 +87,7 @@
         <button type="submit">Add Device</button>       
         <button type="button" id="query-button">Query</button>
         <button type="button" id="total-button">Total</button>
+        <button type="button" id="detail-button" onclick="goToDetailPage()">Detail</button>
         
       </form>
     </div>
@@ -110,6 +112,11 @@
       </table>
     </div>
   </div>
+  <script>
+    function goToDetailPage(){
+      window.location.href = 'details.html'
+    }
+  </script>
   <script src="script.js"></script>        
 </body>
 </html>

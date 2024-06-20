@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const deviceList = document.getElementById('device-list');
     const queryButton = document.getElementById('query-button');
     const totalButton = document.getElementById('total-button');
-    const claerbutton = document.getElementById('clear-button');
-
-    // Get devices table
+    const clearButton = document.getElementById('clear-button');
+    
+    // Fetch devices table
     function fetchDevices() {
         fetch('/api/devices')
             .then(response => response.json())
@@ -15,10 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     addDeviceToTable(device);
                 });
                 updateDeviceTableHeaders();
+            })
+            .catch(error => {
+                console.error('Error fetching devices:', error);
+                alert('Error fetching devices');
             });
     }
 
-    // Update table title
+    // Update table headers
     function updateDeviceTableHeaders() {
         const headers = document.querySelector('.device-list-container thead tr');
         headers.innerHTML = `
@@ -33,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // inital device table
+    // Initial device table load
     fetchDevices();
 
-    // add device
+    // Add device
     deviceForm.addEventListener('submit', event => {
         event.preventDefault();
 
@@ -60,14 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => response.json())
             .then(newDevice => {
-                fetchDevices(); // reload device table & Update table 內容
+                fetchDevices(); // reload device table & Update table content
                 deviceForm.reset();
+            })
+            .catch(error => {
+                console.error('Error adding device:', error);
+                alert('Error adding device');
             });
     });
 
-    claerbutton.addEventListener('click', () => {
+    clearButton.addEventListener('click', () => {
+        event.preventDefault(); // Stop button behavior
         deviceForm.reset();
-
     });
 
     // Query device
@@ -86,32 +94,35 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 deviceList.innerHTML = '';
                 
-                // Update list title
+                // Update list headers
                 updateDeviceTableHeaders();
 
                 data.forEach(device => {
                     addDeviceToTable(device);
                 });
+            })
+            .catch(error => {
+                console.error('Error searching devices:', error);
+                alert('Error searching devices');
             });
     });
 
-    // check total value
+    // Check total value
     totalButton.addEventListener('click', () => {
-        // 先调用更新 total 的 API
+        // First call update total API
         fetch('/api/updateTotal', {
             method: 'POST'
         })
         .then(response => response.text())
         .then(message => {
             console.log(message);
-            // 更新成功后获取 total 表的数据
+            // After updating, fetch total table data
             fetch('/api/totals')
                 .then(response => response.json())
                 .then(data => {
-                    deviceList.innerHTML = ''; // 清空表格
+                    deviceList.innerHTML = ''; // Clear table
     
-                    // 创建总数表格行
-                    // 要修改 currentcont ->receivedcount
+                    // Create total table rows
                     data.forEach(item => {
                         const row = document.createElement('tr');
     
@@ -128,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         deviceList.appendChild(row);
                     });
     
-                    // 更新表格标题为总数数据表格标题
+                    // Update table headers to total data headers
                     const headers = document.querySelector('.device-list-container thead tr');
                     headers.innerHTML = `
                         <th>Name</th>
@@ -142,15 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error fetching totals:', error);
+                    alert('Error fetching totals');
                 });
         })
         .catch(error => {
             console.error('Error updating total:', error);
+            alert('Error updating total');
         });
     });
     
-
-    // add device in "devies" list
+    // Add device to the table
     function addDeviceToTable(device) {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -166,11 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
         deviceList.appendChild(row);
 
         row.querySelector('button').addEventListener('click', () => {
-            if(confirm('Are you sure you want to delete this devices?')) {
+            if (confirm('Are you sure you want to delete this device?')) {
                 fetch(`/api/devices/${device.id}`, {
                     method: 'DELETE'
                 }).then(() => {
                     row.remove();
+                }).catch(error => {
+                    console.error('Error deleting device:', error);
+                    alert('Error deleting device');
                 });
             }
         });

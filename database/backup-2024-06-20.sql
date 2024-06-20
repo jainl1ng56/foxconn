@@ -7,6 +7,18 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 # ------------------------------------------------------------
+# SCHEMA DUMP FOR TABLE: device_info
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `device_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `serial_number` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+# ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: devices
 # ------------------------------------------------------------
 
@@ -20,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `project` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 72 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 74 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: total
@@ -53,7 +65,16 @@ CREATE TABLE IF NOT EXISTS `trash` (
   `location` varchar(255) DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 5 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+# ------------------------------------------------------------
+# DATA DUMP FOR TABLE: device_info
+# ------------------------------------------------------------
+
+INSERT INTO
+  `device_info` (`id`, `name`, `serial_number`, `location`)
+VALUES
+  (1, 'QM9700(MQM9700-NS2R)', 'SX123456789', 'HuYao');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: devices
@@ -72,13 +93,13 @@ INSERT INTO
   )
 VALUES
   (
-    66,
-    'Dennis',
-    '2024-06-14',
+    72,
+    'Oliver',
+    '2024-06-17',
     'QM9700(MQM9700-NS2R)',
     'Switch',
     22,
-    'NVIDIA',
+    '',
     'NaQing(INPUT)'
   );
 INSERT INTO
@@ -94,14 +115,14 @@ INSERT INTO
   )
 VALUES
   (
-    71,
+    73,
     'Jimmy',
     '2024-06-17',
-    'SN5600(920-9N42F-00RI-7C0)',
+    'QM9700(MQM9700-NS2R)',
     'Switch',
-    10,
-    '',
-    'NaQing(INPUT)'
+    5,
+    'Microsoft',
+    'GDL'
   );
 
 # ------------------------------------------------------------
@@ -125,10 +146,10 @@ VALUES
     'QM9700(MQM9700-NS2R)',
     'Switch',
     27,
-    22,
+    27,
     '22',
     '0',
-    '0'
+    '5'
   );
 INSERT INTO
   `total` (
@@ -147,8 +168,8 @@ VALUES
     'SN5600(920-9N42F-00RI-7C0)',
     'Switch',
     2,
-    10,
-    '10',
+    0,
+    '0',
     '0',
     '0'
   );
@@ -416,102 +437,6 @@ VALUES
 # DATA DUMP FOR TABLE: trash
 # ------------------------------------------------------------
 
-INSERT INTO
-  `trash` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`,
-    `deleted_at`
-  )
-VALUES
-  (
-    1,
-    'Rayden',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    2,
-    'NVIDIA',
-    'Naqing_RA01',
-    '2024-06-17 11:34:55'
-  );
-INSERT INTO
-  `trash` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`,
-    `deleted_at`
-  )
-VALUES
-  (
-    2,
-    'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    4,
-    'NVIDIA',
-    'NaQing(INPUT)',
-    '2024-06-17 11:34:56'
-  );
-INSERT INTO
-  `trash` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`,
-    `deleted_at`
-  )
-VALUES
-  (
-    3,
-    'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    5,
-    'Microsoft',
-    'HuYao',
-    '2024-06-17 11:34:56'
-  );
-INSERT INTO
-  `trash` (
-    `id`,
-    `owner`,
-    `date`,
-    `name`,
-    `model`,
-    `count`,
-    `project`,
-    `location`,
-    `deleted_at`
-  )
-VALUES
-  (
-    4,
-    'Jimmy',
-    '2024-06-14',
-    'QM9700(MQM9700-NS2R)',
-    'Switch',
-    7,
-    'Microsoft',
-    'GDL',
-    '2024-06-17 11:34:57'
-  );
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

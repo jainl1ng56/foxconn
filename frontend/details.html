@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Details</title>
+  <link rel="stylesheet" href="details.css">
+</head>
+<body>
+  <header>
+    <h1>Device Details</h1>
+  </header>
+  <div class="container">
+    <div class="details-container">
+        <form id="device-select">
+            <select id="name" name="name">
+                <option value="">Select Device</option>
+                <option value="QM9700(MQM9700-NS2R)">QM9700(MQM9700-NS2R)</option>
+                <option value="SN5600(920-9N42F-00RI-7C0)">SN5600(920-9N42F-00RI-7C0)</option>
+                <option value="SN3700(MSN3700-VS2RC)">SN3700(MSN3700-VS2RC)</option>
+                <option value="SN2201(MSN2201-CB2RC)">SN2201(MSN2201-CB2RC)</option>
+                <option value="Gigabit PoE Switch">Gigabit PoE Switch</option>
+                <option value="Transceiver(MMA4Z00-NS)">Transceiver(MMA4Z00-NS)</option>
+                <option value="Transceiver(MMA4Z00-NS400)">Transceiver(MMA4Z00-NS400)</option>
+                <option value="Transceiver(MMA1Z00-NS400)">Transceiver(MMA1Z00-NS400)</option>
+                <option value="光纖線(MFP7E10-N010)">光纖線(MFP7E10-N010)</option>
+                <option value="AOC(MFS1S00-H005V)">AOC(MFS1S00-H005V)</option>
+                <option value="Fiber splitter cables(MFP7E20-N005)">Fiber splitter cables(MFP7E20-N005)</option>
+                <option value="BlueField 3(900-9D3B6-00CV-AA0)">BlueField 3(900-9D3B6-00CV-AA0)</option>
+                <option value="CX7(MCX75310AAS-NEAT)">CX7(MCX75310AAS-NEAT)</option>
+                <option value="Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)">Optical Transceiver 100GbE QSFP28(MMA1B00-C100D)</option>
+                <option value="DAC(MCP1600-C002E30N)">DAC(MCP1600-C002E30N)</option>
+              </select>
+
+              <select id="location" name="location">
+                <option value="">Select Location</option>
+                <option value="GDL">GDL</option>
+                <option value="HuYao">HuYao</option>
+                <option value="NaQing(INPUT)">NaQing(INPUT)</option>
+                <option value="Naqing_RA01">Naqing_RA01</option>
+                <option value="Naqing_RA04">Naqing_RA04</option>
+                <option value="Naqing_RA07">Naqing_RA07</option>
+              </select>
+              <button type="button" id="clear-button">Clear</button>
+              <button type="button" id="query-button">Query</button>
+        </form>
+        
+      <h2>Device Information</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Device Name</th>
+            <th>Serial Number</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody id="detail-list">
+        </tbody>
+      </table>
+    </div>
+    <button class="back-button" type="button" onclick="goBack()">Back</button>
+  </div>
+  <script>
+    function goBack() {
+      window.location.href = 'index.html'; // Ensure this points to your main page
+    }
+  </script>
+  <script src="detail.js"></script>
+</body>
+</html>
