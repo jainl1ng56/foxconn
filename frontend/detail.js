@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailList = document.getElementById('detail-list');
     const queryButton = document.getElementById('query-button');
     const clearButton = document.getElementById('clear-button');
-    const modifyFormContainer = document.querySelector('.modify-form-container');
+    const modal = document.getElementById('modifyModal');
+    const span = document.getElementsByClassName('close')[0];
     const modifyForm = document.getElementById('modify-form');
     const modifyId = document.getElementById('modify-id');
     const modifyLocation = document.getElementById('modify-location');
     const modifyOwner = document.getElementById('modify-owner');
-    const cancelButton = document.getElementById('cancel-button');
 
     // Clear form and detail list
     clearButton.addEventListener('click', () => {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         modifyId.value = device.id;
                         modifyLocation.value = device.location;
                         modifyOwner.value = device.owner;
-                        modifyFormContainer.style.display = 'block';
+                        modal.style.display = 'block';
                     });
                 });
             })
@@ -56,6 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error fetching device details');
             });
     });
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
 
     // Handle modify form submission
     modifyForm.addEventListener('submit', event => {
@@ -76,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(result => {
-            alert('Device information updated successfully');
-            modifyFormContainer.style.display = 'none';
+            alert(result.message || 'Device information updated successfully'); // Ensure a fallback message
+            modal.style.display = 'none';
             queryButton.click(); // Refresh the device list
         })
         .catch(error => {
@@ -86,8 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle cancel button
-    cancelButton.addEventListener('click', () => {
-        modifyFormContainer.style.display = 'none';
-    });
+    // Go back function
+    function goBack() {
+        window.location.href = 'index.html'; // Ensure this points to your main page
+    }
+    
+    // Attach goBack function to window to make it accessible globally
+    window.goBack = goBack;
 });
