@@ -72,10 +72,16 @@ body {
     padding-bottom: 0.5rem;
   }
   
-  .back-button {
-    display: inline-block;
-    margin-top: 1rem;
-  }
+/* 现有样式... */
+
+.back-button {
+  position: absolute;
+  right: 10px; /* 可以根据需要调整 */
+  top: 0;
+  margin-top: 1rem;
+  background-color: #28a745;
+}
+
 
   .modify-form-container {
     text-align: center;

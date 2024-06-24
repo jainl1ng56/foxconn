@@ -1,0 +1,11 @@
+show global variables like 'local_infile';
+set global local_infile=true;
+
+prompt @$f
+mysql --local_infile=1 -u manager -p 111111 warehouse
+
+
+LOAD DATA LOCAL INFILE 'D:\\warehouse-management\\note\\SN_list.csv'
+INTO TABLE device_info
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
